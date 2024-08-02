@@ -33,7 +33,7 @@ func msgSender(conn net.Conn) {
 
         if text == "/disconnect" {
             fmt.Println("Disconnecting.")
-            return
+            os.Exit(0)
         }
 
         _, err := conn.Write([]byte(text))

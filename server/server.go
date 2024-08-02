@@ -49,8 +49,10 @@ func (c *Chat) AddClient(client Client) error {
 func (c *Chat) SendToClients(msg Message) {
     c.clients_mutex.Lock()
     defer c.clients_mutex.Unlock()
-    for _, client := range c.clients {
-        client.send <- msg
+    for username, client := range c.clients {
+        if msg.username != username {
+            client.send <- msg
+        }
     }
 }
 
@@ -145,6 +147,8 @@ func (c Client) SendMsgToClient() {
 
 func (c Client) Disconnect() {
     c.conn.Close()
+    c.chat.SendToClients(Message{ c.username, "Disconnected..."})
+    fmt.Printf("%s disconnected.", c.username)
     c.chat.RemoveClient(c.username)
 }
 

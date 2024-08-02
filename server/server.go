@@ -83,14 +83,14 @@ func main() {
 
         fmt.Printf("%s logged in\n", username)
 
-        go client.ReceiveMsg()
-        go client.SendMsg(send)
+        go client.ReceiveMsgFromClient()
+        go client.SendMsgToClient()
     }
 }
 
-func (c Client) SendMsg(recv chan Message) {
+func (c Client) SendMsgToClient() {
     for {
-        msg := <-recv
+        msg := <-c.send
         _, err := c.conn.Write([]byte(msg.String()))
 
         if err != nil {
@@ -100,7 +100,7 @@ func (c Client) SendMsg(recv chan Message) {
     } 
 }
 
-func (c Client) ReceiveMsg() {
+func (c Client) ReceiveMsgFromClient() {
 
     for {
 

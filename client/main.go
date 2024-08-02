@@ -1,96 +1,132 @@
 package main
 
 import (
-    "os"
-    "bufio"
-    "fmt"
-    "net"
-    "github.com/joho/godotenv"
+	"bufio"
+	"fmt"
+	"net"
+	"os"
+	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 const (
-    CONNECTION_SUCCESFULL="OK"
-    CONNECTION_UNSUCCESFULL="ERR"
+	CONNECTION_SUCCESFULL   = "OK"
+	CONNECTION_UNSUCCESFULL = "ERR"
 )
 
 func msgReceiver(conn net.Conn) {
-    for {
-        buf := make([]byte, 1024)
+	for {
+		buf := make([]byte, 1024)
 
-        _, err := conn.Read(buf)
-        if err != nil {
-            fmt.Println(err)
-            return
-        }
+		_, err := conn.Read(buf)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
-        fmt.Printf("%s\n", buf)
-    } 
+		fmt.Printf("%s\n", buf)
+	}
 }
 
 func msgSender(conn net.Conn) {
-    scanner := bufio.NewScanner(os.Stdin)
-    for scanner.Scan() {
-        text := scanner.Text()
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		text := scanner.Text()
 
-        if text == "/disconnect" {
-            fmt.Println("Disconnecting.")
-            os.Exit(0)
-        }
+		if text == "/disconnect" {
+			fmt.Println("Disconnecting.")
+			os.Exit(0)
+		}
 
-        _, err := conn.Write([]byte(text))
+		_, err := conn.Write([]byte(text))
 
-        if err != nil {
-            fmt.Println(err)
-            return
-        }
-    }
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
 }
 
 func main() {
-    err := godotenv.Load()
+	err := godotenv.Load()
 
-    if err != nil {
-        fmt.Println("Error loading .env file", err)
-    }
+	if err != nil {
+		fmt.Println("Error loading .env file", err)
+	}
 
-    SERVER_IPADDR := os.Getenv("SERVER_IPADDR")
+	SERVER_IPADDR := os.Getenv("SERVER_IPADDR")
 
-    conn, err := net.Dial("tcp", SERVER_IPADDR + ":8080")
-    defer conn.Close()
+	conn, err := net.Dial("tcp", SERVER_IPADDR+":8080")
+	defer conn.Close()
 
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-    scanner := bufio.NewScanner(os.Stdin)
+	scanner := bufio.NewScanner(os.Stdin)
 
-    fmt.Println("Enter your username")
+	fmt.Println("Enter your room number (1-100)")
+	for scanner.Scan() {
+		chatNumber := scanner.Text()
+		v, err := strconv.Atoi(chatNumber)
+		if err != nil {
+			fmt.Println("Invalid room number, enter again: ")
+			continue
+		}
+		if v > 100 || v < 0 {
+			fmt.Println("Invalid room number, enter again: ")
+			continue
+		}
+		_, err = conn.Write([]byte(chatNumber))
 
-    for scanner.Scan() {
-        username := scanner.Text()
-        _, err = conn.Write([]byte(username))
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
-        if err != nil {
-            fmt.Println(err)
-            return
-        }
+		buf := make([]byte, 4)
+		n, err := conn.Read(buf)
 
-        buf := make([]byte, 4)
-        n, err := conn.Read(buf)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
-        if err != nil {
-            fmt.Println(err)
-            return
-        }
+		if string(buf[:n]) == CONNECTION_SUCCESFULL {
+			break
+		} else {
+			fmt.Println("Invalid room number, enter again: ")
+		}
+	}
 
-        if string(buf[:n]) == CONNECTION_SUCCESFULL {
-            break
-        } else {
-            fmt.Println("Username already existed, enter again: ")
-        }
-    }
+	fmt.Println("Enter your username")
 
-    go msgSender(conn)
-    msgReceiver(conn)
+	for scanner.Scan() {
+		username := scanner.Text()
+		_, err = conn.Write([]byte(username))
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		buf := make([]byte, 4)
+		n, err := conn.Read(buf)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		if string(buf[:n]) == CONNECTION_SUCCESFULL {
+			break
+		} else {
+			fmt.Println("Username already existed, enter again: ")
+		}
+	}
+
+	go msgSender(conn)
+	msgReceiver(conn)
 }

@@ -1,47 +1,47 @@
 package main
 
 import (
-	"sync"
 	"errors"
+	"sync"
 )
 
 type Chat struct {
-    clients map[string]Client
-    clients_mutex sync.Mutex
+	clients       map[string]Client
+	clients_mutex sync.Mutex
 }
 
 func (c *Chat) RemoveClient(username string) {
-    c.clients_mutex.Lock()
-    delete(c.clients, username)
-    c.clients_mutex.Unlock()
+	c.clients_mutex.Lock()
+	delete(c.clients, username)
+	c.clients_mutex.Unlock()
 }
 
 func (c *Chat) AddClient(client Client) error {
-    c.clients_mutex.Lock()
-    defer c.clients_mutex.Unlock()
+	c.clients_mutex.Lock()
+	defer c.clients_mutex.Unlock()
 
-    _, exists := c.clients[client.username]
+	_, exists := c.clients[client.username]
 
-    if exists {
-        return errors.New("Client already existed.")
-    }
+	if exists {
+		return errors.New("Client already existed.")
+	}
 
-    c.clients[client.username] = client
+	c.clients[client.username] = client
 
-    return nil
+	return nil
 }
 
 func (c *Chat) SendToClients(msg Message) {
-    c.clients_mutex.Lock()
-    defer c.clients_mutex.Unlock()
-    for username, client := range c.clients {
-        if msg.username != username {
-            client.send <- msg
-        }
-    }
+	c.clients_mutex.Lock()
+	defer c.clients_mutex.Unlock()
+	for username, client := range c.clients {
+		if msg.username != username {
+			client.send <- msg
+		}
+	}
 }
 
 func createChat() Chat {
-    clients := make(map[string]Client)
-    return Chat { clients, sync.Mutex{} }
+	clients := make(map[string]Client)
+	return Chat{clients, sync.Mutex{}}
 }

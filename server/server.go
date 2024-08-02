@@ -22,12 +22,18 @@ func (m Message) String() string {
 
 type Chat struct {
     clients map[string]Client
-    sends_mutex sync.Mutex
+    clients_mutex sync.Mutex
+}
+
+func (c *Chat) RemoveClient(username string) {
+    c.clients_mutex.Lock()
+    delete(c.clients, username)
+    c.clients_mutex.Unlock()
 }
 
 func (c *Chat) AddClient(client Client) error {
-    c.sends_mutex.Lock()
-    defer c.sends_mutex.Unlock()
+    c.clients_mutex.Lock()
+    defer c.clients_mutex.Unlock()
 
     _, exists := c.clients[client.username]
 
@@ -41,8 +47,8 @@ func (c *Chat) AddClient(client Client) error {
 }
 
 func (c *Chat) SendToClients(msg Message) {
-    c.sends_mutex.Lock()
-    defer c.sends_mutex.Unlock()
+    c.clients_mutex.Lock()
+    defer c.clients_mutex.Unlock()
     for _, client := range c.clients {
         client.send <- msg
     }
@@ -77,12 +83,12 @@ func main() {
 
         if err != nil {
             fmt.Println(err)
+            conn.Close()
             continue
         }
 
-        not_logged := true
 
-        for not_logged {
+        for {
 
             username := make([]byte, 128)
 
@@ -90,12 +96,16 @@ func main() {
 
             if err != nil {
                 fmt.Println(err)
-                return
+                conn.Close()
+                break
             }
 
-            send := make(chan Message)
-
-            client := Client {&mainchat, conn, string(username), send}
+            client := Client {
+                &mainchat,
+                conn,
+                string(username),
+                make(chan Message),
+            }
 
             err = client.chat.AddClient(client)
 
@@ -104,13 +114,14 @@ func main() {
 
                 fmt.Println(err)
             } else {
-                not_logged = false
                 conn.Write([]byte(CONNECTION_SUCCESFULL))
 
                 fmt.Printf("%s logged in\n", username)
 
                 go client.ReceiveMsgFromClient()
                 go client.SendMsgToClient()
+
+                break
             }
         }
 
@@ -126,9 +137,15 @@ func (c Client) SendMsgToClient() {
 
         if err != nil {
             fmt.Println(err)
+            c.Disconnect()
             return
         }
     } 
+}
+
+func (c Client) Disconnect() {
+    c.conn.Close()
+    c.chat.RemoveClient(c.username)
 }
 
 func (c Client) ReceiveMsgFromClient() {
@@ -138,8 +155,10 @@ func (c Client) ReceiveMsgFromClient() {
         buf := make([]byte, 1024)
 
         _, err := c.conn.Read(buf)
+
         if err != nil {
             fmt.Println(err)
+            c.Disconnect()
             return
         }
 

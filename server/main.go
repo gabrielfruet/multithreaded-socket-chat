@@ -12,6 +12,7 @@ const (
 
 func main() {
     ln, err := net.Listen("tcp",":8080")
+    fmt.Println("Listening on port 8080...")
 
     if err != nil {
         fmt.Println(err)

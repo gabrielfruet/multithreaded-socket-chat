@@ -5,6 +5,7 @@ import (
     "bufio"
     "fmt"
     "net"
+    "github.com/joho/godotenv"
 )
 
 const (
@@ -46,7 +47,15 @@ func msgSender(conn net.Conn) {
 }
 
 func main() {
-    conn, err := net.Dial("tcp", "localhost:8080")
+    err := godotenv.Load()
+
+    if err != nil {
+        fmt.Println("Error loading .env file", err)
+    }
+
+    SERVER_IPADDR := os.Getenv("SERVER_IPADDR")
+
+    conn, err := net.Dial("tcp", SERVER_IPADDR + ":8080")
     defer conn.Close()
 
     if err != nil {

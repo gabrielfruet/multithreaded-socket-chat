@@ -1,9 +1,15 @@
 package main
 
 import (
-    "fmt"
-    "net"
-    "sync"
+	"errors"
+	"fmt"
+	"net"
+	"sync"
+)
+
+const (
+    CONNECTION_SUCCESFULL= "OK"
+    CONNECTION_UNSUCCESFULL="ERR"
 )
 
 type Message struct {
@@ -19,10 +25,19 @@ type Chat struct {
     sends_mutex sync.Mutex
 }
 
-func (c *Chat) AddClient(client Client) {
+func (c *Chat) AddClient(client Client) error {
     c.sends_mutex.Lock()
     defer c.sends_mutex.Unlock()
+
+    _, exists := c.clients[client.username]
+
+    if exists {
+        return errors.New("Client already existed.")
+    }
+
     c.clients[client.username] = client
+
+    return nil
 }
 
 func (c *Chat) SendToClients(msg Message) {
@@ -65,26 +80,42 @@ func main() {
             continue
         }
 
+        not_logged := true
 
-        username := make([]byte, 128)
+        for not_logged {
 
-        _, err = conn.Read(username)
+            username := make([]byte, 128)
 
-        if err != nil {
-            fmt.Println(err)
-            return
+            _, err = conn.Read(username)
+
+            if err != nil {
+                fmt.Println(err)
+                return
+            }
+
+            send := make(chan Message)
+
+            client := Client {&mainchat, conn, string(username), send}
+
+            err = client.chat.AddClient(client)
+
+            if err != nil {
+                conn.Write([]byte(CONNECTION_UNSUCCESFULL))
+
+                fmt.Println(err)
+            } else {
+                not_logged = false
+                conn.Write([]byte(CONNECTION_SUCCESFULL))
+
+                fmt.Printf("%s logged in\n", username)
+
+                go client.ReceiveMsgFromClient()
+                go client.SendMsgToClient()
+            }
         }
 
-        send := make(chan Message)
 
-        client := Client {&mainchat, conn, string(username), send}
 
-        client.chat.AddClient(client)
-
-        fmt.Printf("%s logged in\n", username)
-
-        go client.ReceiveMsgFromClient()
-        go client.SendMsgToClient()
     }
 }
 

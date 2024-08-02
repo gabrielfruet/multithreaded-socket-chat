@@ -7,6 +7,11 @@ import (
     "net"
 )
 
+const (
+    CONNECTION_SUCCESFULL="OK"
+    CONNECTION_UNSUCCESFULL="ERR"
+)
+
 func msgReceiver(conn net.Conn) {
     for {
         buf := make([]byte, 1024)
@@ -53,13 +58,28 @@ func main() {
 
     fmt.Println("Enter your username")
 
-    scanner.Scan()
-    username := scanner.Text()
-    _, err = conn.Write([]byte(username))
+    for scanner.Scan() {
+        username := scanner.Text()
+        _, err = conn.Write([]byte(username))
 
-    if err != nil {
-        fmt.Println(err)
-        return
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+
+        buf := make([]byte, 4)
+        n, err := conn.Read(buf)
+
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+
+        if string(buf[:n]) == CONNECTION_SUCCESFULL {
+            break
+        } else {
+            fmt.Println("Username already existed, enter again: ")
+        }
     }
 
     go msgSender(conn)

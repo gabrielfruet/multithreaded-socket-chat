@@ -16,18 +16,13 @@ func (m Message) String() string {
 
 type Chat struct {
     clients map[string]Client
-    clients_connections map[string]net.Conn
-    sends map[string]chan Message
     sends_mutex sync.Mutex
 }
 
 func (c *Chat) AddClient(client Client) {
     c.sends_mutex.Lock()
     defer c.sends_mutex.Unlock()
-    //c.clients_connections[username] = conn
-    //c.sends[username] = send
     c.clients[client.username] = client
-    //c.sends = append(c.sends, send)
 }
 
 func (c *Chat) SendToClients(msg Message) {
@@ -39,10 +34,8 @@ func (c *Chat) SendToClients(msg Message) {
 }
 
 func createChat() Chat {
-    clients_connections := make(map[string]net.Conn)
     clients := make(map[string]Client)
-    sends := make(map[string]chan Message, 0)
-    return Chat { clients, clients_connections, sends, sync.Mutex{} }
+    return Chat { clients, sync.Mutex{} }
 }
 
 

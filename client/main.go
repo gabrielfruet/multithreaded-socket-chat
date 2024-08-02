@@ -5,6 +5,12 @@ import (
     "bufio"
     "fmt"
     "net"
+    "github.com/joho/godotenv"
+)
+
+const (
+    CONNECTION_SUCCESFULL="OK"
+    CONNECTION_UNSUCCESFULL="ERR"
 )
 
 func msgReceiver(conn net.Conn) {
@@ -28,7 +34,7 @@ func msgSender(conn net.Conn) {
 
         if text == "/disconnect" {
             fmt.Println("Disconnecting.")
-            return
+            os.Exit(0)
         }
 
         _, err := conn.Write([]byte(text))
@@ -41,7 +47,15 @@ func msgSender(conn net.Conn) {
 }
 
 func main() {
-    conn, err := net.Dial("tcp", "localhost:8080")
+    err := godotenv.Load()
+
+    if err != nil {
+        fmt.Println("Error loading .env file", err)
+    }
+
+    SERVER_IPADDR := os.Getenv("SERVER_IPADDR")
+
+    conn, err := net.Dial("tcp", SERVER_IPADDR + ":8080")
     defer conn.Close()
 
     if err != nil {
@@ -53,13 +67,28 @@ func main() {
 
     fmt.Println("Enter your username")
 
-    scanner.Scan()
-    username := scanner.Text()
-    _, err = conn.Write([]byte(username))
+    for scanner.Scan() {
+        username := scanner.Text()
+        _, err = conn.Write([]byte(username))
 
-    if err != nil {
-        fmt.Println(err)
-        return
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+
+        buf := make([]byte, 4)
+        n, err := conn.Read(buf)
+
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+
+        if string(buf[:n]) == CONNECTION_SUCCESFULL {
+            break
+        } else {
+            fmt.Println("Username already existed, enter again: ")
+        }
     }
 
     go msgSender(conn)

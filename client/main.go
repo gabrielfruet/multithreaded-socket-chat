@@ -67,7 +67,7 @@ func main() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
-	fmt.Println("Enter your room number (1-100)")
+	fmt.Println("Enter your room number (0-100)")
 	for scanner.Scan() {
 		chatNumber := scanner.Text()
 		v, err := strconv.Atoi(chatNumber)

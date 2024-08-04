@@ -12,8 +12,8 @@ type Chat struct {
 
 func (c *Chat) RemoveClient(username string) {
 	c.clients_mutex.Lock()
+	defer c.clients_mutex.Unlock()
 	delete(c.clients, username)
-	c.clients_mutex.Unlock()
 }
 
 func (c *Chat) AddClient(client *Client) error {

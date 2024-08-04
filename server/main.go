@@ -75,14 +75,9 @@ func main() {
 				break
 			}
 
-			client := Client{
-				&chatList[chatNumberInt],
-				conn,
-				string(username),
-				make(chan Message),
-			}
+            client := createClient(&chatList[chatNumberInt],conn,string(username))
 
-			err = client.chat.AddClient(client)
+			err = client.chat.AddClient(&client)
 
 			if err != nil {
 				conn.Write([]byte(CONNECTION_UNSUCCESFULL))

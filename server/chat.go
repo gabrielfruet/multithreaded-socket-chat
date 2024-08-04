@@ -6,7 +6,7 @@ import (
 )
 
 type Chat struct {
-	clients       map[string]Client
+	clients       map[string]*Client
 	clients_mutex sync.Mutex
 }
 
@@ -16,7 +16,7 @@ func (c *Chat) RemoveClient(username string) {
 	c.clients_mutex.Unlock()
 }
 
-func (c *Chat) AddClient(client Client) error {
+func (c *Chat) AddClient(client *Client) error {
 	c.clients_mutex.Lock()
 	defer c.clients_mutex.Unlock()
 
@@ -42,6 +42,6 @@ func (c *Chat) SendToClients(msg Message) {
 }
 
 func createChat() Chat {
-	clients := make(map[string]Client)
+	clients := make(map[string]*Client)
 	return Chat{clients, sync.Mutex{}}
 }

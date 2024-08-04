@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+    "sync"
 )
 
 type Client struct {
@@ -10,9 +11,20 @@ type Client struct {
 	conn     net.Conn
 	username string
 	send     chan Message
+    disconnect_mutex sync.Mutex
 }
 
-func (c Client) SendMsgToClient() {
+func createClient(chat *Chat, conn net.Conn, username string) Client {
+    return Client{
+        chat,
+        conn,
+        string(username),
+        make(chan Message),
+        sync.Mutex{},
+    }
+}
+
+func (c *Client) SendMsgToClient() {
 	for {
 		msg := <-c.send
 		_, err := c.conn.Write([]byte(msg.String()))
@@ -25,14 +37,21 @@ func (c Client) SendMsgToClient() {
 	}
 }
 
-func (c Client) Disconnect() {
-	c.conn.Close()
-	c.chat.SendToClients(Message{c.username, "Disconnected..."})
-	fmt.Printf("%s disconnected.", c.username)
-	c.chat.RemoveClient(c.username)
+func (c *Client) Disconnect() {
+    c.disconnect_mutex.Lock()
+    defer c.disconnect_mutex.Unlock()
+
+    if c.conn != nil {
+        c.conn.Close()
+        c.conn = nil
+
+        c.chat.SendToClients(Message{c.username, "Disconnected..."})
+        fmt.Printf("%s disconnected.", c.username)
+        c.chat.RemoveClient(c.username)
+    }
 }
 
-func (c Client) ReceiveMsgFromClient() {
+func (c *Client) ReceiveMsgFromClient() {
 	for {
 
 		buf := make([]byte, 1024)

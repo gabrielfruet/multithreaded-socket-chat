@@ -1,0 +1,144 @@
+Oi, tudo bem?
+Como você está?
+Estou bem, obrigado.
+E você?
+O que você está fazendo?
+Nada de mais.
+Você viu o último episódio?
+Sim, foi incrível!
+Qual é o seu filme favorito?
+Eu adoro comédias.
+Você gosta de música?
+Sim, eu adoro!
+Qual é a sua banda favorita?
+Eu gosto de rock.
+O que você vai fazer no fim de semana?
+Vou viajar.
+Para onde você vai?
+Vou para a praia.
+Você gosta de esportes?
+Sim, eu jogo futebol.
+Qual é o seu time?
+Sou torcedor do Flamengo.
+Você joga videogame?
+Sim, eu adoro!
+Qual é o seu jogo favorito?
+Gosto de RPGs.
+Você tem algum hobby?
+Gosto de pintar.
+Qual é a sua cor favorita?
+Adoro azul.
+Você tem irmãos?
+Sim, tenho um irmão.
+Como ele se chama?
+Ele se chama Pedro.
+Você gosta de cozinhar?
+Sim, adoro fazer sobremesas.
+Qual é o seu prato favorito?
+Amo lasanha.
+Você já viajou para o exterior?
+Sim, fui para a Europa.
+Qual país você mais gostou?
+Adorei a Itália.
+Você fala outras línguas?
+Sim, falo inglês e espanhol.
+Qual é o seu livro favorito?
+Gosto de romances.
+Você gosta de ler?
+Sim, eu leio todos os dias.
+Você tem animal de estimação?
+Sim, tenho um cachorro.
+Qual é o nome dele?
+Ele se chama Max.
+Você gosta de gatos?
+Sim, são muito fofos.
+Você prefere praia ou montanha?
+Prefiro a praia.
+Você gosta de acampar?
+Sim, é muito relaxante.
+Qual é a sua estação do ano favorita?
+Adoro o verão.
+Você gosta de festas?
+Sim, principalmente de aniversários.
+Você prefere doce ou salgado?
+Prefiro doce.
+Qual é o seu doce favorito?
+Amo brigadeiro.
+Você gosta de café?
+Sim, não vivo sem.
+Qual é a sua bebida favorita?
+Adoro suco de laranja.
+Você gosta de tecnologia?
+Sim, estou sempre atualizado.
+Qual é o seu aplicativo favorito?
+Uso muito o Instagram.
+Você gosta de redes sociais?
+Sim, mas uso com moderação.
+Qual é o seu feriado favorito?
+Amo o Natal.
+Você gosta de viajar de avião?
+Sim, acho emocionante.
+Qual é o seu destino dos sonhos?
+Quero conhecer o Japão.
+Você já foi a um show?
+Sim, fui ao Rock in Rio.
+Qual foi o melhor show que você já viu?
+Amei o show do Coldplay.
+Você gosta de dançar?
+Sim, adoro dançar forró.
+Qual é o seu tipo de dança favorito?
+Gosto de samba.
+Você já fez algum curso?
+Sim, fiz um curso de culinária.
+Qual curso você gostaria de fazer?
+Quero aprender fotografia.
+Você gosta de trabalhar em equipe?
+Sim, é muito produtivo.
+Qual é o seu sonho de carreira?
+Quero ser engenheiro.
+Você gosta de filmes de terror?
+Sim, mas tenho medo.
+Qual é o seu filme de terror favorito?
+Gosto de 'O Chamado'.
+Você prefere livros ou filmes?
+Prefiro livros.
+Qual é o seu autor favorito?
+Gosto de J.K. Rowling.
+Você já escreveu alguma coisa?
+Sim, escrevo contos.
+Qual é o seu gênero literário favorito?
+Gosto de ficção científica.
+Você já participou de alguma competição?
+Sim, de natação.
+Qual foi o resultado?
+Ganhei a medalha de prata.
+Você gosta de arte?
+Sim, adoro visitar museus.
+Qual é o seu artista favorito?
+Gosto de Van Gogh.
+Você já fez alguma aula de arte?
+Sim, já fiz aula de pintura.
+Qual é o seu tipo de arte favorito?
+Adoro arte moderna.
+Você gosta de andar de bicicleta?
+Sim, é ótimo para relaxar.
+Você já fez trilha?
+Sim, já fiz várias.
+Qual é a sua trilha favorita?
+Gosto da trilha da Pedra da Gávea.
+Você gosta de comida japonesa?
+Sim, amo sushi.
+Qual é o seu prato japonês favorito?
+Gosto de sashimi.
+Você já comeu comida chinesa?
+Sim, adoro yakisoba.
+Qual é o seu prato chinês favorito?
+Gosto de rolinho primavera.
+Você já foi ao cinema recentemente?
+Sim, fui na semana passada.
+Qual filme você assistiu?
+Assisti 'Avatar'.
+Você gosta de documentários?
+Sim, são muito informativos.
+Qual é o seu documentário favorito?
+Gosto de 'Our Planet'.

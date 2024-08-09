@@ -57,7 +57,7 @@ func main() {
 
 	SERVER_IPADDR := os.Getenv("SERVER_IPADDR")
 
-	conn, err := net.Dial("tcp", SERVER_IPADDR+":8080")
+	conn, err := net.Dial("tcp", SERVER_IPADDR+":5555")
 	defer conn.Close()
 
 	if err != nil {

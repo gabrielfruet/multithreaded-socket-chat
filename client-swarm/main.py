@@ -1,4 +1,5 @@
 import socket
+import os
 import time
 import random
 import threading
@@ -7,7 +8,7 @@ NO_OF_THREADS=256
 
 def client(names, phrases):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_addr = ('localhost', 8080)
+    server_addr = ('localhost', 5555)
     sock.connect(server_addr)
 
     while True:
@@ -42,13 +43,14 @@ def client(names, phrases):
             return
 
 def main():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
     names = []
-    with open('names.txt', "r", encoding='utf-8') as namestxt:
+    with open(os.path.join(current_dir, 'names.txt'), "r", encoding='utf-8') as namestxt:
         while name := namestxt.readline():
             names.append(name.strip())
 
     phrases = []
-    with open('phrases.txt', 'r', encoding='utf-8') as phrasestxt:
+    with open(os.path.join(current_dir, 'phrases.txt'), 'r', encoding='utf-8') as phrasestxt:
         while phrase := phrasestxt.readline():
             phrases.append(phrase)
 

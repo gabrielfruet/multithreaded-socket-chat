@@ -6,8 +6,6 @@ import (
 	"net"
 	"os"
 	"strconv"
-
-	"github.com/joho/godotenv"
 )
 
 const (
@@ -49,15 +47,11 @@ func msgSender(conn net.Conn) {
 }
 
 func main() {
-	err := godotenv.Load()
-
-	if err != nil {
-		fmt.Println("Error loading .env file", err)
-	}
-
 	SERVER_IPADDR := os.Getenv("SERVER_IPADDR")
+    fmt.Println("IPADDR")
+    fmt.Println(SERVER_IPADDR)
 
-	conn, err := net.Dial("tcp", SERVER_IPADDR+":8080")
+	conn, err := net.Dial("tcp", SERVER_IPADDR+":5555")
 	defer conn.Close()
 
 	if err != nil {

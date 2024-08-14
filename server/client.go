@@ -12,6 +12,7 @@ type Client struct {
 	username string
 	send     chan Message
     disconnect_mutex sync.Mutex
+    connected bool
 }
 
 func createClient(chat *Chat, conn net.Conn, username string) Client {
@@ -21,6 +22,7 @@ func createClient(chat *Chat, conn net.Conn, username string) Client {
         string(username),
         make(chan Message),
         sync.Mutex{},
+        true,
     }
 }
 
@@ -41,14 +43,13 @@ func (c *Client) Disconnect() {
     c.disconnect_mutex.Lock()
     defer c.disconnect_mutex.Unlock()
 
-    if c.conn != nil {
-        c.conn.Close()
-        c.conn = nil
+    if !c.connected { return }
 
-        c.chat.SendToClients(Message{c.username, "Disconnected..."})
-        fmt.Printf("%s disconnected.", c.username)
-        c.chat.RemoveClient(c.username)
-    }
+    c.conn.Close()
+    c.connected = false
+    c.chat.SendToClients(Message{c.username, "Disconnected..."})
+    fmt.Printf("%s disconnected.", c.username)
+    c.chat.RemoveClient(c.username)
 }
 
 func (c *Client) ReceiveMsgFromClient() {

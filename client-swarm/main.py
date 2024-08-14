@@ -43,16 +43,15 @@ def client(names, phrases):
             return
 
 def main():
+    print(os.getenv('SERVER_IPADDR'))
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    names = []
+    names = None
     with open(os.path.join(current_dir, 'names.txt'), "r", encoding='utf-8') as namestxt:
-        while name := namestxt.readline():
-            names.append(name.strip())
+        names = [name.strip() for name in namestxt]
 
-    phrases = []
-    with open(os.path.join(current_dir, 'phrases.txt'), 'r', encoding='utf-8') as phrasestxt:
-        while phrase := phrasestxt.readline():
-            phrases.append(phrase)
+    phrases = None
+    with open(os.path.join(current_dir, 'phrases.txt'), "r", encoding='utf-8') as phrasestxt:
+        phrases = [phrase.strip() for phrase in phrasestxt]
 
     threads = []
 
